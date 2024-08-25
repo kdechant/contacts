@@ -18,7 +18,7 @@ namespace ContactManager.Data
 
         public Contact? GetContactByID(int id)
         {
-            var contact = _context.Contacts.FirstOrDefault(c => c.Id == id);
+            var contact = _context.Contacts.Find(id);
             return contact;
         }
 
