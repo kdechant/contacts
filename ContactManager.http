@@ -1,0 +1,44 @@
+﻿@ContactManager_HostAddress = http://localhost:5000
+
+// List all contacts
+GET {{ContactManager_HostAddress}}/api/contacts
+
+###
+
+// Get single contact
+GET {{ContactManager_HostAddress}}/api/contacts/1
+
+###
+
+// Create contact
+POST {{ContactManager_HostAddress}}/api/contacts
+Content-Type: application/json
+
+{
+  "id": 0,
+  "firstName": "Tricia",
+  "lastName": "McMillan",
+  "email": "trillian@example.com",
+  "phoneNumber": "555-555-4242"
+}
+
+###
+
+// Update contact
+PUT {{ContactManager_HostAddress}}/api/contacts/2
+Content-Type: application/json
+
+{
+  "id": 2,
+  "firstName": "Ford2",
+  "lastName": "Prefect2",
+  "email": "ford2@example.com",
+  "phoneNumber": "555-555-4242"
+}
+
+###
+
+// Delete contact
+DELETE {{ContactManager_HostAddress}}/api/contacts/6
+
+###
