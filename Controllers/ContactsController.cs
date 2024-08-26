@@ -20,16 +20,17 @@ namespace ContactManager.Controllers
 
         // GET: api/Contacts
         [HttpGet]
-        public ActionResult<IEnumerable<Contact>> GetContacts()
+        public async Task<ActionResult<IEnumerable<Contact>>> GetContacts()
         {
-            return _repository.GetContacts().ToArray();
+            var contacts = await _repository.GetContactsAsync();
+            return contacts.ToArray();
         }
 
         // GET: api/Contacts/5
         [HttpGet("{id}")]
-        public ActionResult<Contact> GetContact(int id)
+        public async Task<ActionResult<Contact>> GetContact(int id)
         {
-            var contact = _repository.GetContactByID(id);
+            var contact = await _repository.GetContactByIdAsync(id);
 
             if (contact == null)
             {
@@ -41,7 +42,7 @@ namespace ContactManager.Controllers
 
         // PUT: api/Contacts/5
         [HttpPut("{id}")]
-        public IActionResult PutContact(int id, Contact contact)
+        public async Task<IActionResult> PutContact(int id, Contact contact)
         {
             if (id != contact.Id)
             {
@@ -49,16 +50,21 @@ namespace ContactManager.Controllers
                 return BadRequest();
             }
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _repository.UpdateContact(contact);
 
             try
             {
-                _repository.Save();
+                await _repository.SaveAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
                 // UPDATE query failed. Check if the row actually exists.
-                if (_repository.GetContactByID(id) == null)
+                if (_repository.GetContactByIdAsync(id) == null)
                 {
                     // Tried to update a row that doesn't exist.
                     return NotFound();
@@ -75,36 +81,37 @@ namespace ContactManager.Controllers
 
         // POST: api/Contacts
         [HttpPost]
-        public ActionResult<Contact> PostContact(Contact contact)
+        public async Task<ActionResult<Contact>> PostContact(Contact contact)
         {
-            _repository.InsertContact(contact);
-            _repository.Save();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            // A fancier app would catch exceptions here for errors like trying to 
-            // insert a duplicate contact. But this sample app doesn't have any
-            // validation, so the INSERT query will always succeed.
+            _repository.InsertContact(contact);
+            await _repository.SaveAsync();
 
             return CreatedAtAction("GetContact", new { id = contact.Id }, contact);
         }
 
         // DELETE: api/Contacts/5
         [HttpDelete("{id}")]
-        public IActionResult DeleteContact(int id)
+        public async Task<IActionResult> DeleteContact(int id)
         {
-            var contact = _repository.GetContactByID(id);
+            var contact = await _repository.GetContactByIdAsync(id);
             if (contact == null)
             {
                 return NotFound();
             }
 
-            _repository.DeleteContact(id);
+            await _repository.DeleteContactAsync(id);
 
             return NoContent();
         }
 
-        private bool ContactExists(int id)
+        private async Task<bool> ContactExists(int id)
         {
-            return _repository.GetContactByID(id) != null;
+            return await _repository.GetContactByIdAsync(id) != null;
         }
     }
 }

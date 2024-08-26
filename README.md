@@ -8,7 +8,7 @@ To run this project:
     1. In Visual Studio's Package Manager Console, run `Update-Database`
 	1. Alternately, from PowerShell, run `dotnet ef database update`
 		1. If this fails, run `dotnet tool install --global dotnet-ef --version 8.*` and try again
-4. Run the project with the Visual Studio "play" button. A browser window should open with Swagger in it.
+4. Start the project (it should say 'http' next to the 'start debugging' button). A browser window will open with Swagger in it.
 
 To run tests:
 

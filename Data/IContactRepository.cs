@@ -4,11 +4,11 @@ namespace ContactManager.Data
 {
     public interface IContactRepository : IDisposable
     {
-        IEnumerable<Contact> GetContacts();
-        Contact? GetContactByID(int contactId);
+        Task<IEnumerable<Contact>> GetContactsAsync();
+        Task<Contact?> GetContactByIdAsync(int id);
         void InsertContact(Contact contact);
-        void DeleteContact(int contactID);
+        Task DeleteContactAsync(int id);
         void UpdateContact(Contact contact);
-        void Save();
+        Task SaveAsync();
     }
 }

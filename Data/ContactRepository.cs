@@ -1,4 +1,5 @@
 ﻿using ContactManager.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ContactManager.Data
 {
@@ -11,15 +12,14 @@ namespace ContactManager.Data
             _context = context;
         }
 
-        public IEnumerable<Contact> GetContacts()
+        public async Task<IEnumerable<Contact>> GetContactsAsync()
         {
-            return _context.Contacts;
+            return await _context.Contacts.ToListAsync();
         }
 
-        public Contact? GetContactByID(int id)
+        public async Task<Contact?> GetContactByIdAsync(int id)
         {
-            var contact = _context.Contacts.Find(id);
-            return contact;
+            return await _context.Contacts.FindAsync(id);
         }
 
         public void InsertContact(Contact contact)
@@ -29,22 +29,22 @@ namespace ContactManager.Data
 
         public void UpdateContact(Contact contact)
         {
-            _context.Entry(contact).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _context.Entry(contact).State = EntityState.Modified;
         }
 
-        public void DeleteContact(int id)
+        public async Task DeleteContactAsync(int id)
         {
-            var contact = _context.Contacts.Find(id);
+            var contact = await _context.Contacts.FindAsync(id);
             if (contact == null)
             {
-                throw new Exception("Contact not found");
+                throw new KeyNotFoundException("Contact not found");
             }
             _context.Contacts.Remove(contact);
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         private bool disposed = false;
